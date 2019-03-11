@@ -180,7 +180,42 @@ namespace SharepointTestUtility {
             var site = clientContext.Web.Webs.Add(webCreationInformation);
             clientContext.Load(site);
             clientContext.ExecuteQuery();
+            Console.WriteLine(site.Id.ToString());
+          }
+        } else if (actionType.Equals("deleteSite")) {
+          using (ClientContext clientContext = getClientContext((string)action["Url"])) {
+            clientContext.Web.DeleteObject();
+          }
+        } else if (actionType.Equals("createList")) {
+          using (ClientContext clientContext = getClientContext((string)action["ParentSiteUrl"])) {
+            Web web = clientContext.Web;
+            clientContext.Load(web);
+            clientContext.ExecuteQuery();
 
+            //Create a List.
+            ListCreationInformation listCreationInfo;
+            List list;
+
+            listCreationInfo = new ListCreationInformation();
+            listCreationInfo.Description = (string)action["Description"];
+            listCreationInfo.Title = (string)action["Title"];
+
+            ListTemplate lt = web.ListTemplates.GetByName((string)action["ListTemplateName"]);
+            listCreationInfo.TemplateFeatureId = lt.FeatureId;
+
+            list = web.Lists.Add(listCreationInfo);
+            clientContext.ExecuteQuery();
+
+            Console.WriteLine(list.Id.ToString());
+          }
+        } else if (actionType.Equals("deleteList")) {
+          using (ClientContext clientContext = getClientContext((string)action["ParentSiteUrl"])) {
+            Web web = clientContext.Web;
+            List oList = web.Lists.GetById(Guid.Parse((string)action["Guid"]));
+
+            oList.DeleteObject();
+
+            clientContext.ExecuteQuery();
           }
         }
       }
