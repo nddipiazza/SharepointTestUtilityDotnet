@@ -39,3 +39,25 @@ SP test utility will be run via command line
 * `ParentSiteUrl` = string - url of the parent site.
 * `UseSamePermissionsAsParentSite` = boolean
 
+Writes site `guid` when done.
+
+### Delete a site
+
+* `Type` = `deleteSite`
+* `Url` = string - Full url of the site delete
+
+### Create a list
+
+* `Type` = `createList`
+* `Description` = string
+* `Title` = string
+* `ListTemplateName` = Name of the list template to use.
+* `ParentSiteUrl` = Parent site that will contain this list.
+
+Writes `guid` of the list when done.
+
+### Delete a list
+
+* `Type` = `deleteList`
+* `Guid` = Guid of the list.
+* `ParentSiteUrl` = Parent site that will contain this list.
