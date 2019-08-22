@@ -1,0 +1,78 @@
+﻿###################################################################################################
+Einsatz des PerformanceMonitors:
+
+Konfiguration:
+<configuration>
+  <configSections>
+    <section name="performanceMonitorConfig" type="Company.Common.Diagnostics.Configuration.PerformanceMonitorConfig, Company.Common" />
+  </configSections>
+
+  <performanceMonitorConfig>
+    <categories resetCategories="false">
+      <add name="<Kategorie>" enabled="true">
+        <performanceCounter>
+          <add name="# operations per sec" type="RateOfCountsPerSecond32" enabled="true" />
+        </performanceCounter>
+      </add>
+    </categories>
+  </performanceMonitorConfig>
+
+</configuration>
+
+Initialisieren:
+PerformanceMonitor.Configure();
+
+Benutzen:
+PerformanceMonitor.Factory.StartCounter("<Kategorie>", PerformanceMonitor.MonitorInstance, "# operations per sec");
+...
+PerformanceMonitor.Factory.EndCounter("<Kategorie>", PerformanceMonitor.MonitorInstance, "# operations per sec");
+
+###################################################################################################
+Einsatz des Composers:
+
+Klasse ableiten:
+public class Infrastructure : ComposeImpl
+
+Felder definieren:
+[Import(typeof (<ImportType>))] 
+private ImportType ImportTypeVariable = null;
+
+Konstructoren definieren:
+static Infrastructure()
+{
+    Parser = new Commandline(new CatalogProvider());
+}
+
+private Infrastructure(IProvideCatalog catalogProvider)
+{
+    Contract.Requires(catalogProvider != null);
+    Composer.Compose(catalogProvider.Catalog);
+}
+
+###################################################################################################
+
+Einsatz von Loop:
+
+Loop.ForEach(<IEnumerable>, item => {})
+Wird der Parameter "sequential" weggelassen, dann entscheidet "SequentialAsDefault" ob sequential gearbeitet werden soll
+Loop.ForEach(Sequential, <IEnumerable>, item => {})
+Wird der Parameter "sequential" angegeben arbeitet Loop immer in der angegebenen Art und Weise
+
+###################################################################################################
+
+Einsatz der MemoryQueue:
+In die Queue können nur Elemente des gleichen Types eingefügt werden. FIFO prinzip
+
+Initialisieren:
+IQueue queue = new MemoryQueue();
+queue.OnNewItemAdded += OnNewItemAdded;
+
+Benutzen:
+queue.Enqueue(TQueueItem queueItem)
+Nachdem ein Element der Queue hinzugefügt wurde wird das Event "OnNewItemAdded" aufgerufen!
+
+if(!queue.TryDequeue(out TQueueItem queueItem))
+{
+    // Fehler Element konnte nicht gelesen und aus der Queue entfernt werden.
+}
+###################################################################################################
